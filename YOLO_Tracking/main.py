@@ -112,12 +112,12 @@ plot_all_trajectory_pieces(out_path)
 merged_trajectories_dic = merge_trajectories_by_time(all_trajectories, time_threshold=THRESHOLDS["time_threshold"], y_threshold=THRESHOLDS["y_threshold"], min_x_loc1=THRESHOLDS["min_x_loc1"], min_x_loc2=THRESHOLDS["min_x_loc2"], min_x_loc3=THRESHOLDS["min_x_loc3"])
 
 
-
+# Plotting the results of the Merging
 plot_all_merged_trajectories(merged_trajectories_dic)
 
 
 ##########################################################################################################################
-# Assume `new_dict` is created from your merging function for a new video
+# Creates the final dictionary. The final result of the code. 
 final_dict_path = os.path.join(RESULTS_DIR, "final_dict.pkl")
 save_final_dict(merged_trajectories_dic, final_dict_path)
 
