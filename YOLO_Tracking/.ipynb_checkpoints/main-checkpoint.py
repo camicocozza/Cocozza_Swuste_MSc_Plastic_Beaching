@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 from ultralytics import YOLO
+# %matplotlib inline
 
 
 from Settings import MODEL_PATH, VIDEO_ROOT, RESULTS_DIR, video_params, THRESHOLDS
@@ -15,25 +16,8 @@ from processing_trajectories import process_tracking_data
 from Merging_Functions import merge_trajectories_by_time
 from Merging_Functions import plot_all_merged_trajectories
 from processing_trajectories import plot_all_trajectory_pieces
+# from Creating_Final_Dict import build_final_dict
 from Creating_Final_Dict import save_final_dict
-
-"""This script automates the process of detecting and tracking particles in video files using a pre-trained YOLO model.
-It performs the following steps:
-
-1. Loads all video files from a specified root directory
-2. For each video:
-   - Checks if it has predefined tracking parameters.
-   - Runs YOLO with ByteTrack to detect and track objects, saving label files. 
-   - Processes the label files to extract data for each detected object.
-3. All extracted trajectories are stored in a dictionary and saved to a pickle file.
-4. Plots all initial trajectory pieces for visual inspection.
-5. Merges trajectory segments from multiple camera locations based on spatial and temporal thresholds.
-6. Plots the merged trajectories.
-7. Saves the merged results into a final dictionary file for further analysis or reuse.
-
-All the root directories, threshold values and other parameters are can be changed in the Settings.py file. 
-
-Dependencies include OpenCV, pandas, numpy, tqdm, and the Ultralytics YOLO implementation."""
 
 # --- MAIN LOOP ---
 all_trajectories = {}
@@ -75,6 +59,15 @@ for video_path in tqdm(video_files, desc="Tracking videos"):
         except Exception as e:
             print(f"   ❌ Failed to process {custom_name}: {e}")
             result = None
+        
+        # if result is not None: 
+        #     processed_shape = result.orig_img.shape  # (height, width, channels)
+        #     height_resized = processed_shape[0]
+        #     width_resized = processed_shape[1]
+        #     print(f"Processed shape: height={height_resized}, width={width_resized}")
+        #     ratio = height_resized/width_resized
+        #     params = video_params[file_name].copy()
+        #     params["ratio"] = ratio
     else:
         params = video_params[file_name]
         print(f'else {params}')
@@ -105,12 +98,12 @@ print(f"\nDone! Saved results to {out_path}")
 
 ###########################################################################################################################
 # plotting the tracked trajectory pieces that result from running YOLO and are stored in all_trajectories. 
-plot_all_trajectory_pieces(out_path)
+plot_all_trajectory_pieces(out_path)  # stored in processing_trajectories
 
 
-# Merging the trajectories (By running the functions in Merging_Functions.py)
+# merged_trajectories_dic = merge_trajectories_by_time(all_trajectories, time_threshold=2, y_threshold=15)
 merged_trajectories_dic = merge_trajectories_by_time(all_trajectories, time_threshold=THRESHOLDS["time_threshold"], y_threshold=THRESHOLDS["y_threshold"], min_x_loc1=THRESHOLDS["min_x_loc1"], min_x_loc2=THRESHOLDS["min_x_loc2"], min_x_loc3=THRESHOLDS["min_x_loc3"])
-
+# print(merged_trajectories_dic)
 
 
 plot_all_merged_trajectories(merged_trajectories_dic)
