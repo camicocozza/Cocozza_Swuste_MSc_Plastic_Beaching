@@ -12,12 +12,6 @@ from ultralytics import YOLO
 
 from Settings import THRESHOLDS
 
-""" 
-Initially, YOLO outputs a large number of detections stored as .txt files. 
-To extract meaningful trajectories, these detections are grouped based on their 
-proximity in both space and time, allowing the reconstruction of individual particle paths.
-"""
-
 def assign_trajectory_ids(df, distance_threshold=THRESHOLDS["distance_between_points"], max_frame_gap=THRESHOLDS["max_frame_gap"]):
     """
     The dataframe contains the frame number, time stamp and location of each particle. Based on framenumber of
